@@ -14,8 +14,10 @@ import org.junit.platform.suite.api.SuiteDisplayName;
         TC04_NewDataInput_Test.class,
         TC05_DataListing_Test.class,
         TC06_MultiPageListEntry_Test.class,
-        TC07_ModifyExistingData_Test.class
+        TC07_ModifyExistingData_Test.class,
+        TC08_SaveData_Test.class,
+        TC09_DeleteDataTest.class,
 })
 public class AllTestsSuite {
-    // Ez az osztály üres marad, csak a fenti listát futtatja le sorban!
+
 }

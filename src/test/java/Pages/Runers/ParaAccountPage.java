@@ -1,12 +1,15 @@
 package Pages.Runers;
 
-import tests.datatypes.Saving; // Import a TC03-hoz (CSV modell)
+import tests.datatypes.Saving; // Import a TC03-hoz és TC08-hoz (CSV modell)
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParaAccountPage {
     private WebDriver driver;
@@ -42,6 +45,13 @@ public class ParaAccountPage {
     private By firstAccountLink = By.xpath("//table[@id='accountTable']/tbody/tr[1]/td[1]/a");
     private By transactionRows = By.xpath("//table[@id='transactionTable']/tbody/tr");
     private By allAccountRows = By.xpath("//table[@id='accountTable']/tbody/tr");
+
+
+    // ==========================================
+    //         ADATKIMENTÉS SZELEKTOROK (TC08)
+    // ==========================================
+    // Ez a főoldali számlatáblázat sorait célozza meg
+    private By accountTableRows = By.cssSelector("#accountTable tbody tr");
 
 
     // KONSTRUKTOR
@@ -177,5 +187,36 @@ public class ParaAccountPage {
         By accountLink = By.xpath("//table[@id='accountTable']/tbody/tr[" + (accountIndex + 1) + "]/td[1]/a");
         wait.until(ExpectedConditions.elementToBeClickable(accountLink)).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("transactionTable")));
+    }
+
+
+    // ==========================================
+    //        ADATKIMENTÉS METÓDUSOK (TC08)
+    // ==========================================
+
+    /**
+     * Leolvassa a ParaBank főoldali táblázatát, és Saving listát készít belőle (TC08)
+     */
+    public List<Saving> getAllSavings() {
+        List<Saving> foundSavings = new ArrayList<>();
+
+        // Megvárjuk, hogy a táblázat sorai láthatóak legyenek
+        wait.until(ExpectedConditions.visibilityOfElementLocated(accountTableRows));
+        List<WebElement> rows = driver.findElements(accountTableRows);
+
+        // Az utolsó sort (Total) kihagyjuk, ezért megyünk rows.size() - 1 -ig
+        for (int i = 0; i < rows.size() - 1; i++) {
+            List<WebElement> cells = rows.get(i).findElements(By.tagName("td"));
+
+            if (!cells.isEmpty()) {
+                String accountNumber = cells.get(0).getText().trim(); // 1. oszlop: Számlaszám (A te 'name' meződ)
+                String balance = cells.get(1).getText().trim();       // 2. oszlop: Egyenleg (A te 'initialDeposit' meződ)
+
+                // Létrehozzuk a Saving objektumot a te egyedi (name, initialDeposit) konstruktoroddal
+                Saving saving = new Saving(accountNumber, balance);
+                foundSavings.add(saving);
+            }
+        }
+        return foundSavings;
     }
 }
