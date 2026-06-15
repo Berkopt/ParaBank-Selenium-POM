@@ -23,7 +23,6 @@ public class TC08_SaveData_Test extends BaseTest {
         ParaLoginPage loginPage = new ParaLoginPage(driver);
 
         // 2. Adatok bevitele és Login gomb megnyomása
-        // FONTOS: Ellenőrizd, hogy ezek az adatok élőek-e a böngészőben!
         loginPage.enterCredentials("john", "demo");
         loginPage.clickLogin();
 

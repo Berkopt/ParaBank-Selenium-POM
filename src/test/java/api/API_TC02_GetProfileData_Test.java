@@ -28,7 +28,7 @@ public class API_TC02_GetProfileData_Test extends BaseApiTest { // Örököljük
                 .when()
                 .get("/customers/12212");
 
-        // Kiíratjuk a formázott JSON választ a konzolra (ez felel meg a Masterfieldes prettyPrint-nek)
+        // Kiíratjuk a formázott JSON választ a konzolra
         System.out.println("--- API VÁLASZ (JSON) ---");
         response.prettyPrint();
         System.out.println("------------------------");

@@ -63,7 +63,7 @@ public class TC02_InvalidLogin_Test extends BaseTest {
                 }
             });
         } catch (org.openqa.selenium.TimeoutException e) {
-            // Ha letelik a 10 másodperc és a szerver nem válaszolt semmit, nem engedjük elhasalni a tesztet
+            // Amennyiben letelik a 10 másodperc és a szerver nem válaszolt semmit, nem engedjük elbukni a tesztet
             messageArrived = false;
         }
 

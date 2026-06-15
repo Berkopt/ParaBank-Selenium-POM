@@ -46,7 +46,7 @@ public class TC09_DeleteDataTest extends BaseTest {
             System.out.println("TC09 - Az adatok tisztítása (CLEAN) sikeresen elküldve, az oldal stabil.");
 
         } catch (Exception e) {
-            // Ha a ParaBank épp teljesen elérhetetlen vagy elhasal, kezeljük le kecsesen, mint a többi tesztnél
+            // Ha a ParaBank épp teljesen elérhetetlen vagy elhasal, akkor lekezeljük
             System.out.println("⚠️ KÖRNYEZETI HIBA: A ParaBank admin felülete nem válaszolt időben. Teszt passzolt környezeti kivétellel.");
         }
     }

@@ -48,7 +48,7 @@ public class TC06_MultiPageListEntry_Test extends BaseTest {
         int totalAccounts = accountPage.getAccountCount();
         System.out.println("A rendszerben talált számlák száma a bejáráshoz: " + totalAccounts);
 
-        // 3. LÉPÉS: OSZTOTT/TÖBBOLDALAS BEJÁRÁSI CIKLUS (Órai logika alapján)
+        // 3. LÉPÉS: OSZTOTT/TÖBBOLDALAS BEJÁRÁSI CIKLUS
         // Végigmegyünk az összes számla "oldalán"
         for (int currentAccountIndex = 0; currentAccountIndex < totalAccounts; currentAccountIndex++) {
             System.out.println("--- Bejárás: " + (currentAccountIndex + 1) + ". számlatörténet megnyitása ---");

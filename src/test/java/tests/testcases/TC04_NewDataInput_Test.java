@@ -37,7 +37,6 @@ public class TC04_NewDataInput_Test extends BaseTest {
         wait.until(ExpectedConditions.urlContains("overview"));
 
         // 2. LÉPÉS: Ciklusos adatbevitel beállítása
-        // Hányszor fusson le az ismételt adatbevitel (az órai 10 helyett érdemes 3-mal tesztelni, hogy gyors legyen)
         int tranzakciokSzama = 3;
         String utalandoOsszeg = "150";
 
