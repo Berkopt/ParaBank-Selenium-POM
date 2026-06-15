@@ -1,4 +1,4 @@
-package tests;
+package tests.testcases;
 
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
@@ -17,6 +17,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
         TC07_ModifyExistingData_Test.class,
         TC08_SaveData_Test.class,
         TC09_DeleteDataTest.class,
+        TC10_Logout_Test.class,
 })
 public class AllTestsSuite {
 
