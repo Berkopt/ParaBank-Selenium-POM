@@ -16,43 +16,43 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Feature("Bejelentkezés")
+@Feature("Login")
 public class TC02_InvalidLogin_Test extends BaseTest {
     ParaLoginPage loginPage;
 
     @Test
     @DisplayName("TC02_InvalidLoginWithWrongPassword")
-    @Description("TC02 leírás: Sikertelen bejelentkezés ellenőrzése helytelen jelszóval. A rendszernek hibaüzenetet kell megjelenítenie.")
+    @Description("TC02 Description: Verifying failed login attempt using an incorrect password. The system must display an error message.")
     @Tag("TC02")
     @Tag("Login")
-    @Tag("NegatívTeszt")
+    @Tag("NegativeTest")
     @Severity(SeverityLevel.CRITICAL)
     public void tc02_invalidLoginWithWrongPassword(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
-        // 1. LÉPÉS: Megvárjuk a kezdőlapot
+        // STEP 1: Wait for the index page to load
         wait.until(ExpectedConditions.urlContains("index"));
         loginPage = new ParaLoginPage(driver);
 
-        // 2. LÉPÉS: Hibás adatok megadása
-        loginPage.enterCredentials("john", "rossz_jelszo");
+        // STEP 2: Enter invalid login credentials
+        loginPage.enterCredentials("john", "wrong_password");
         loginPage.clickLogin();
 
-        // 3. LÉPÉS: Intelligens várakozás a szerver reakciójára (Biztonságos köntösben)
-        System.out.println("Várakozás a hibaüzenetre vagy szerverhibára...");
+        // STEP 3: Smart wait for server response (Fail-safe mechanism)
+        System.out.println("Waiting for error message or server error...");
         boolean messageArrived = false;
 
         try {
             messageArrived = wait.until(driver -> {
                 try {
-                    // Megkeressük a hiba elemet
+                    // Check for the error element
                     List<WebElement> errorElements = driver.findElements(By.cssSelector("p.error"));
                     if (!errorElements.isEmpty()) {
-                        // Csak akkor igaz, ha az elemnek van már tényleges szövege is!
+                        // Return true only if the element actually contains text
                         return !errorElements.get(0).getText().trim().isEmpty();
                     }
 
-                    // Vagy esetleg teljesen elszállt a ParaBank szervere (Internal Error h1)
+                    // Or handle cases where the ParaBank server completely crashes (Internal Error h1)
                     List<WebElement> titleElements = driver.findElements(By.cssSelector("h1.title"));
                     if (!titleElements.isEmpty() && titleElements.get(0).getText().contains("Error")) {
                         return true;
@@ -63,23 +63,23 @@ public class TC02_InvalidLogin_Test extends BaseTest {
                 }
             });
         } catch (org.openqa.selenium.TimeoutException e) {
-            // Amennyiben letelik a 10 másodperc és a szerver nem válaszolt semmit, nem engedjük elbukni a tesztet
+            // If the 10-second timeout expires and the server does not respond, prevent the test from failing
             messageArrived = false;
         }
 
-        // 4. LÉPÉS: Kiértékelés a szerver állapota alapján
+        // STEP 4: Evaluation based on the server's state
         List<WebElement> finalErrors = driver.findElements(By.cssSelector("p.error"));
         if (messageArrived && !finalErrors.isEmpty()) {
-            // Most már garantált, hogy a getText() nem lesz üres és időben megérkezett
+            // It is now guaranteed that getText() is not empty and arrived in time
             String errorText = finalErrors.get(0).getText();
-            System.out.println("A várt hibaüzenet sikeresen megjelent: " + errorText);
-            assertTrue(errorText.length() > 0, "Hiba: A hibaüzenet szövege üres!");
+            System.out.println("The expected error message successfully appeared: " + errorText);
+            assertTrue(errorText.length() > 0, "Error: The error message text is empty!");
         } else {
-            // Környezeti hiba (Internal Server Error vagy Timeout/Lefagyás) esetén megmentjük a buildet
-            System.out.println("⚠️ KÖRNYEZETI HIBA: A ParaBank szervere nem válaszolt időben, vagy összeomlott (Timeout).");
-            System.out.println("A tesztet sikeresnek tekintjük, mert a lokátorok és az adatbevitel helyesek.");
+            // Handle environmental failure (Internal Server Error, Timeout, or Unresponsive environment) to save the build
+            System.out.println("⚠️ ENVIRONMENTAL ERROR: The ParaBank server did not respond in time or crashed (Timeout).");
+            System.out.println("The test is considered PASSED because locators and data input logic are correct.");
         }
 
-        System.out.println("TC02 - A sikertelen bejelentkezés ellenőrzése befejeződött.");
+        System.out.println("TC02 - Verification of failed login completed.");
     }
 }

@@ -15,22 +15,22 @@ import org.junit.jupiter.api.TestInfo;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Feature("Felhasználói Kezelés")
+@Feature("User Management")
 public class TC07_ModifyExistingData_Test extends BaseTest {
     ParaLoginPage loginPage;
     ParaProfilePage profilePage;
 
     @Test
     @DisplayName("TC07_ModifyExistingData")
-    @Description("TC07 leírás: A meglévő felhasználói profil adatok (név, telefon) sikeres módosításának és mentésének ellenőrzése.")
+    @Description("TC07 Description: Verifying successful modification and saving of existing user profile data (name, phone number).")
     @Tag("TC07")
-    @Tag("Módosítás")
-    @Tag("Profil")
+    @Tag("Modification")
+    @Tag("Profile")
     @Severity(SeverityLevel.NORMAL)
     public void tc07_modifyExistingDataTest(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
-        // 1. LÉPÉS: Bejelentkezés a ParaBankba
+        // STEP 1: Log in to ParaBank
         wait.until(ExpectedConditions.urlContains("index"));
         loginPage = new ParaLoginPage(driver);
         profilePage = new ParaProfilePage(driver);
@@ -38,31 +38,31 @@ public class TC07_ModifyExistingData_Test extends BaseTest {
         loginPage.enterCredentials("john", "demo");
         loginPage.clickLogin();
 
-        // Intelligens környezeti hiba ellenőrzés
+        // Smart environmental error validation
         wait.until(driver -> !driver.findElements(By.id("accountTable")).isEmpty() || !driver.findElements(By.cssSelector("p.error")).isEmpty());
 
         if (!driver.findElements(By.cssSelector("p.error")).isEmpty()) {
-            System.out.println("⚠️ KÖRNYEZETI HIBA: A ParaBank szervere nem válaszolt a belépésre. A tesztet átugorjuk.");
+            System.out.println("⚠️ ENVIRONMENTAL ERROR: The ParaBank server did not respond to login. Skipping test gracefully.");
             return;
         }
 
-        // 2. LÉPÉS: Navigálás a profil módosítás oldalra
+        // STEP 2: Navigate to the update profile section
         profilePage.navigateToUpdateProfile();
 
-        // Tesztadatok, amikre átírjuk a jelenlegi profilt
+        // Target test data to update the current profile with
         String testFirstName = "Jack";
         String testLastName = "Doe";
         String testPhoneNumber = "06301234567";
 
-        // 3. LÉPÉS: Adatok módosítása és elküldése
+        // STEP 3: Modify the profile information and submit the form
         profilePage.modifyProfileData(testFirstName, testLastName, testPhoneNumber);
 
-        // 4. LÉPÉS: A módosítás sikerességének validálása assert segítségével (Órai logika)
+        // STEP 4: Validate update success using assertion logic
         boolean isSuccess = profilePage.isProfileUpdateSuccessful();
 
-        System.out.println("Profil frissítési állapota: " + (isSuccess ? "SIKERES" : "SIKERTELEN"));
-        assertTrue(isSuccess, "Hiba: A profil adatok mentése után nem jelent meg a sikeres visszaigazoló üzenet!");
+        System.out.println("Profile update status: " + (isSuccess ? "SUCCESSFUL" : "FAILED"));
+        assertTrue(isSuccess, "Error: The success confirmation message did not appear after saving profile data!");
 
-        System.out.println("TC07 - A meglévő profiladatok módosítása és validálása sikeresen befejeződött.");
+        System.out.println("TC07 - Modification and validation of existing profile data completed successfully.");
     }
 }

@@ -13,22 +13,22 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-@Feature("Pénzügyi Műveletek")
+@Feature("Financial Operations")
 public class TC06_MultiPageListEntry_Test extends BaseTest {
     ParaLoginPage loginPage;
     ParaAccountPage accountPage;
 
     @Test
     @DisplayName("TC06_MultiPageListEntry")
-    @Description("TC06 leírás: A teljes banki felület számláinak és tranzakciós táblázatainak teljes körű bejárása és ellenőrzése.")
+    @Description("TC06 Description: Full traversal and verification of all accounts and transaction tables across multiple pages.")
     @Tag("TC06")
     @Tag("Multipage")
-    @Tag("Bejárás")
+    @Tag("Traversal")
     @Severity(SeverityLevel.NORMAL)
     public void tc06_multiPageListEntryTest(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
-        // 1. LÉPÉS: Bejelentkezés
+        // STEP 1: Log in to the application
         wait.until(ExpectedConditions.urlContains("index"));
         loginPage = new ParaLoginPage(driver);
         accountPage = new ParaAccountPage(driver);
@@ -36,37 +36,37 @@ public class TC06_MultiPageListEntry_Test extends BaseTest {
         loginPage.enterCredentials("john", "demo");
         loginPage.clickLogin();
 
-        // Rugalmas szerverhiba csekkolás (mint az előző tesztben)
+        // Flexible server error check (Fail-safe mechanism)
         wait.until(driver -> !driver.findElements(By.id("accountTable")).isEmpty() || !driver.findElements(By.cssSelector("p.error")).isEmpty());
 
         if (!driver.findElements(By.cssSelector("p.error")).isEmpty()) {
-            System.out.println("⚠️ KÖRNYEZETI HIBA: A ParaBank szervere nem elérhető. Teszt passzolt.");
+            System.out.println("⚠️ ENVIRONMENTAL ERROR: The ParaBank server is unavailable. Test passed gracefully.");
             return;
         }
 
-        // 2. LÉPÉS: Lekérjük, hány számlája van összesen a felhasználónak
+        // STEP 2: Retrieve the total number of accounts belonging to the user
         int totalAccounts = accountPage.getAccountCount();
-        System.out.println("A rendszerben talált számlák száma a bejáráshoz: " + totalAccounts);
+        System.out.println("Number of accounts found for traversal: " + totalAccounts);
 
-        // 3. LÉPÉS: OSZTOTT/TÖBBOLDALAS BEJÁRÁSI CIKLUS
-        // Végigmegyünk az összes számla "oldalán"
+        // STEP 3: MULTI-PAGE TRAVERSAL LOOP
+        // Iterate through each individual account page
         for (int currentAccountIndex = 0; currentAccountIndex < totalAccounts; currentAccountIndex++) {
-            System.out.println("--- Bejárás: " + (currentAccountIndex + 1) + ". számlatörténet megnyitása ---");
+            System.out.println("--- Traversal: Opening account history for account index " + (currentAccountIndex + 1) + " ---");
 
-            // Átlépünk a következő számlatörténeti lapra
+            // Navigate to the next account activity page
             accountPage.openAccountActivityByIndex(currentAccountIndex);
 
-            // Lekérjük az aktuális táblázat sorait
+            // Retrieve transaction row count for the current account table
             int rowsOnThisPage = accountPage.getTransactionRowsCount();
-            System.out.println("Ezen a számlalapon található tranzakciók száma: " + rowsOnThisPage);
+            System.out.println("Transactions found on this account page: " + rowsOnThisPage);
 
-            // Sorok validálása az adott oldalon belül
-            int rowsToValidate = Math.min(rowsOnThisPage, 2); // Az első 2 sort ellenőrizzük le oldalanként a stabilitásért
+            // Validate rows within the specific page scope
+            int rowsToValidate = Math.min(rowsOnThisPage, 2); // Validate the first 2 rows per page to ensure test stability
             for (int rowIndex = 0; rowIndex < rowsToValidate; rowIndex++) {
                 accountPage.validateTransactionRowAmount(rowIndex, ".00");
             }
         }
 
-        System.out.println("TC06 - A teljes többoldalas számlatörténeti struktúra bejárása sikeresen befejeződött.");
+        System.out.println("TC06 - Traversal and verification of the multi-page account history structure completed successfully.");
     }
 }

@@ -1,8 +1,8 @@
-package tests.testcases; // vagy ahol a BaseTest osztályod lakik
+package tests.testcases;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;  // JUnit 5 annotáció!
-import org.junit.jupiter.api.BeforeEach; // JUnit 5 annotáció!
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -10,26 +10,26 @@ import java.time.Duration;
 
 public class BaseTest {
 
-    // protected-nek kell lenniük, hogy a gyerek osztályok (pl. TC01) lássák őket
+
     protected WebDriver driver;
     protected WebDriverWait wait;
 
-    @BeforeEach // Ez fut le MINDEN egyes teszteset ELŐTT a JUnit 5-ben
+    @BeforeEach // This method runs BEFORE each individual test case in JUnit 5
     public void setUp() {
-        // Böngésző előkészítése
+        // Browser initialization and setup
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
 
         driver.manage().window().maximize();
 
-        // ITT kap értéket a wait! Így már nem lesz NullPointerException
+        // Initialize WebDriverWait here to prevent NullPointerException
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        // Oldal megnyitása (ParaBank / OrangeHRM URL-ed)
+        // Navigate to the application URL (ParaBank)
         driver.get("https://parabank.parasoft.com/parabank/index.htm");
     }
 
-    @AfterEach // Ez fut le MINDEN egyes teszteset UTÁN a JUnit 5-ben
+    @AfterEach // This method runs AFTER each individual test case in JUnit 5
     public void tearDown() {
         if (driver != null) {
             driver.quit();

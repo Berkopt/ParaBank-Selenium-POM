@@ -16,33 +16,33 @@ public class TC08_SaveData_Test extends BaseTest {
 
     @Test
     @DisplayName("TC08_SaveData")
-    @Description("Létező ParaBank számlák adatainak lementése a felületről egy új CSV fájlba")
+    @Description("TC08 Description: Extracting existing account data from the ParaBank UI and exporting it into a new CSV file.")
     public void TC08_SaveData() {
 
-        // 1. Bejelentkező oldal példányosítása
+        // STEP 1: Instantiate the Login page object
         ParaLoginPage loginPage = new ParaLoginPage(driver);
 
-        // 2. Adatok bevitele és Login gomb megnyomása
+        // STEP 2: Input user credentials and submit the login form
         loginPage.enterCredentials("john", "demo");
         loginPage.clickLogin();
 
-        // 3. BIZTONSÁGI VÁRAKOZÁS: Megvárjuk, amíg az URL átvált az overview (számlaáttekintő) oldalra
+        // STEP 3: FAIL-SAFE WAIT: Ensure the URL switches to the overview page after login
         WebDriverWait loginWait = new WebDriverWait(driver, Duration.ofSeconds(10));
         try {
             loginWait.until(ExpectedConditions.urlContains("overview.htm"));
-            System.out.println("-> Sikeres bejelentkezés detektálva, az URL megfelelő!");
+            System.out.println("-> Successful login detected, URL is correct!");
         } catch (Exception e) {
-            System.err.println("-> Hiba: Nem sikerült belépni az overview oldalra! Aktuális URL: " + driver.getCurrentUrl());
-            org.junit.jupiter.api.Assertions.fail("A bejelentkezés sikertelen volt, a teszt nem tudja leolvasni a táblázatot.");
+            System.err.println("-> Error: Failed to reach the overview page! Current URL: " + driver.getCurrentUrl());
+            org.junit.jupiter.api.Assertions.fail("Login attempt failed; unable to scrape data from the account table.");
         }
 
-        // 4. Létrehozzuk a számlaoldalt (most már biztosan ott áll a böngésző)
+        // STEP 4: Instantiate the Account page object now that the browser is verified to be on the correct page
         ParaAccountPage accountPage = new ParaAccountPage(driver);
 
-        // 5. Táblázat adatainak leolvasása
+        // STEP 5: Scrape and retrieve all account data from the UI table
         List<Saving> currentSavings = accountPage.getAllSavings();
 
-        // 6. Kiírás a CSV fájlba
+        // STEP 6: Export the extracted data into a local CSV file
         DataSource.saveSavings(currentSavings);
     }
 }

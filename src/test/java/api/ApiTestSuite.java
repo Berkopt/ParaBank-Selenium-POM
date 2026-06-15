@@ -5,9 +5,8 @@ import org.junit.platform.suite.api.Suite;
 import org.junit.platform.suite.api.SuiteDisplayName;
 
 @Suite
-@SuiteDisplayName("ParaBank API Tesztcsomag")
+@SuiteDisplayName("ParaBank API Regression Test Suite")
 @SelectClasses({
-
         API_TC01_GetCustomerDetails_Test.class,
         API_TC02_GetProfileData_Test.class,
         API_TC03_ModifyProfileData_Test.class,

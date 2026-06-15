@@ -15,15 +15,15 @@ public class API_TC04_CreateAccountChained_Test extends BaseApiTest {
     @Test
     @DisplayName("API_TC04_CreateAccountChained_Test")
     @Tag("API")
-    @Tag("PozitívTeszt")
+    @Tag("PositiveTest")
     public void tc04_createAccountChained(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
         int customerId = 12212;
         int fromAccountId;
 
-        /* 1. LÉPÉS: Lekérjük az ügyfél számláit */
-        System.out.println("1. Lépés: Meglévő számlák lekérése a Customer ID alapján...");
+        /* STEP 1: Retrieve existing customer accounts */
+        System.out.println("Step 1: Retrieving existing accounts based on Customer ID...");
         Response response = given()
                 .pathParam("id", customerId)
                 .when()
@@ -33,12 +33,12 @@ public class API_TC04_CreateAccountChained_Test extends BaseApiTest {
                 .statusCode(200)
                 .body("[0].id", notNullValue());
 
-        /* Megvan a forrás számlaszám */
+        /* Source account ID successfully extracted */
         fromAccountId = response.path("[0].id");
-        System.out.println("--> Dinamikusan kinyert forrás számlaszám (fromAccountId): " + fromAccountId);
+        System.out.println("--> Dynamically extracted source account ID (fromAccountId): " + fromAccountId);
 
-        /* 2. LÉPÉS: Új számlanyitási POST kérés */
-        System.out.println("2. Lépés: Új számla létrehozása a kinyert forrás számlaszámmal...");
+        /* STEP 2: Execute POST request to open a new account */
+        System.out.println("Step 2: Creating a new account using the extracted source account ID...");
 
         given()
                 .queryParam("customerId", customerId)
@@ -52,6 +52,6 @@ public class API_TC04_CreateAccountChained_Test extends BaseApiTest {
                 .body("type", equalTo("SAVINGS"))
                 .body("balance", equalTo(0));
 
-        System.out.println("API_TC04 - A láncolt számlalétrehozási teszt sikeresen lefutott.");
+        System.out.println("API_TC04 - Chained account creation test completed successfully.");
     }
 }

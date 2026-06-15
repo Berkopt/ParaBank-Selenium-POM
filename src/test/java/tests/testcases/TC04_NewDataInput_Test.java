@@ -12,22 +12,22 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-@Feature("Pénzügyi Műveletek")
+@Feature("Financial Operations")
 public class TC04_NewDataInput_Test extends BaseTest {
     ParaLoginPage loginPage;
     ParaAccountPage accountPage;
 
     @Test
     @DisplayName("TC04_NewDataInput_MultipleTransfers")
-    @Description("TC04 leírás: Többszörös egymást követő pénzátutalási tranzakciók végrehajtása és validálása ciklusban.")
+    @Description("TC04 Description: Executing and validating multiple consecutive fund transfer transactions within a loop.")
     @Tag("TC04")
-    @Tag("Új")
-    @Tag("Adatbevitel")
+    @Tag("New")
+    @Tag("DataInput")
     @Severity(SeverityLevel.CRITICAL)
     public void tc04_multipleTransfersTest(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
-        // 1. LÉPÉS: Bejelentkezés a ParaBankba
+        // STEP 1: Log in to ParaBank
         wait.until(ExpectedConditions.urlContains("index"));
         loginPage = new ParaLoginPage(driver);
         accountPage = new ParaAccountPage(driver);
@@ -36,26 +36,26 @@ public class TC04_NewDataInput_Test extends BaseTest {
         loginPage.clickLogin();
         wait.until(ExpectedConditions.urlContains("overview"));
 
-        // 2. LÉPÉS: Ciklusos adatbevitel beállítása
-        int tranzakciokSzama = 3;
-        String utalandoOsszeg = "150";
+        // STEP 2: Configure loop-based data input parameters
+        int transactionCount = 3;
+        String transferAmount = "150";
 
-        for (int i = 0; i < tranzakciokSzama; i++) {
-            System.out.println("-> " + (i + 1) + ". tranzakció végrehajtása a(z) " + tranzakciokSzama + "-ból.");
+        for (int i = 0; i < transactionCount; i++) {
+            System.out.println("-> Executing transaction " + (i + 1) + " of " + transactionCount + ".");
 
-            // Átnavigálunk az utalási oldalra
+            // Navigate to the fund transfer page
             accountPage.navigateToTransferFunds();
             wait.until(ExpectedConditions.urlContains("transfer"));
 
-            // Végrehajtjuk az utalást az összeggel
-            accountPage.executeTransfer(utalandoOsszeg);
+            // Execute the fund transfer with the specified amount
+            accountPage.executeTransfer(transferAmount);
 
-            // Ellenőrizzük, hogy megjelent-e a sikeres utalást igazoló képernyő
+            // Verify if the transfer success message screen is displayed
             boolean transferOk = accountPage.isTransferSuccessful();
             org.junit.jupiter.api.Assertions.assertTrue(transferOk,
-                    "Hiba: A(z) " + (i + 1) + ". tranzakció sikertelen volt!");
+                    "Error: Transaction " + (i + 1) + " failed!");
         }
 
-        System.out.println("TC04 - Minden ismételt adatbeviteli tranzakció sikeresen lefutott.");
+        System.out.println("TC04 - All repeated data input transactions completed successfully.");
     }
 }

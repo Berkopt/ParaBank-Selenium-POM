@@ -7,17 +7,18 @@ import org.junit.jupiter.api.BeforeAll;
 
 public class BaseApiTest {
 
-    @BeforeAll // Egyszer fut le az összes API teszt előtt
+    // This method executes once before any API test cases run
+    @BeforeAll
     public static void setupApi() {
-        // Beállítjuk a ParaBank API alap URL-jét
+        // Configure the base URL for the ParaBank API services
         RestAssured.baseURI = "https://parabank.parasoft.com/parabank/services/bank";
 
-        // Létrehozunk egy alapértelmezett kérés-specifikációt (minden kérés JSON formátumú lesz)
+        // Create a default global request specification to ensure all requests use JSON format
         RestAssured.requestSpecification = new RequestSpecBuilder()
                 .setContentType(ContentType.JSON)
                 .setAccept(ContentType.JSON)
                 .build();
 
-        System.out.println("API Alapbeállítások konfigurálva. Base URL: " + RestAssured.baseURI);
+        System.out.println("API Global configuration completed. Base URL: " + RestAssured.baseURI);
     }
 }

@@ -13,22 +13,22 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-@Feature("Pénzügyi Műveletek")
+@Feature("Financial Operations")
 public class TC05_DataListing_Test extends BaseTest {
     ParaLoginPage loginPage;
     ParaAccountPage accountPage;
 
     @Test
     @DisplayName("TC05_DataListing_TransactionHistory")
-    @Description("TC05 leírás: A tranzakciós táblázat első oldalán található sorok listázása és az összegek validálása ciklusban.")
+    @Description("TC05 Description: Listing rows on the first page of the transaction table and validating amounts within a loop.")
     @Tag("TC05")
-    @Tag("Listázás")
-    @Tag("Adatellenőrzés")
+    @Tag("Listing")
+    @Tag("DataVerification")
     @Severity(SeverityLevel.NORMAL)
     public void tc05_dataListingTest(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
-        // 1. LÉPÉS: Megvárjuk a kezdőlapot és bejelentkezünk
+        // STEP 1: Wait for the index page to load and perform login
         wait.until(ExpectedConditions.urlContains("index"));
         loginPage = new ParaLoginPage(driver);
         accountPage = new ParaAccountPage(driver);
@@ -36,15 +36,15 @@ public class TC05_DataListing_Test extends BaseTest {
         loginPage.enterCredentials("john", "demo");
         loginPage.clickLogin();
 
-        // 2. LÉPÉS: Intelligens szerverhiba-kezelés
-        // Megvárjuk, hogy VAGY a sikeres táblázat, VAGY a ParaBank hibaüzenete jelenjen meg
+        // STEP 2: Smart server error handling
+        // Wait until EITHER the successful account table OR a ParaBank error message appears
         boolean loginResult = wait.until(driver -> {
             try {
                 if (!driver.findElements(By.id("accountTable")).isEmpty()) {
-                    return true; // Sikeres belépés
+                    return true; // Successful login
                 }
                 if (!driver.findElements(By.cssSelector("p.error")).isEmpty()) {
-                    return true; // Szerverhiba vagy hibaüzenet jött vissza
+                    return true; // Server error or error message received
                 }
                 return false;
             } catch (Exception e) {
@@ -52,39 +52,39 @@ public class TC05_DataListing_Test extends BaseTest {
             }
         });
 
-        // Ha hibaüzenet jelent meg az oldalon, akkor a szerver túlterhelt
+        // If an error message appears on the page, the server is overloaded
         if (!driver.findElements(By.cssSelector("p.error")).isEmpty()) {
             String errorMsg = driver.findElement(By.cssSelector("p.error")).getText();
-            System.out.println("⚠️ KÖRNYEZETI HIBA: A ParaBank szervere hibát dobott a belépésnél: " + errorMsg);
-            System.out.println("A tesztet sikeresnek tekintjük, mert a lokátorok jók, de a külső szerver nem válaszolt.");
-            return; // Elegánsan kilépünk, a teszt ZÖLD marad!
+            System.out.println("⚠️ ENVIRONMENTAL ERROR: The ParaBank server threw an error during login: " + errorMsg);
+            System.out.println("The test is considered PASSED because locators are correct, but the external server failed to respond.");
+            return; // Graceful exit, test remains GREEN!
         }
 
-        System.out.println("Sikeres belépés, tranzakciók betöltése...");
+        System.out.println("Successful login, loading transactions...");
 
-        // 3. LÉPÉS: Átlépés a számlatörténet (Account Activity) oldalra
+        // STEP 3: Navigate to the Account Activity (Transaction History) page
         accountPage.openFirstAccountActivity();
 
-        // 4. LÉPÉS: Dinamikus sorszám lekérés a táblázatból
+        // STEP 4: Dynamically retrieve the number of rows from the table
         int totalRowsOnPage = accountPage.getTransactionRowsCount();
-        System.out.println("A táblázatban összesen talált tranzakciók száma: " + totalRowsOnPage);
+        System.out.println("Total transaction rows found in the table: " + totalRowsOnPage);
 
-        // Ha nincs tranzakció, akkor sincs gond, nem buktatjuk el a tesztet környezeti hiba miatt
+        // If there are no transactions, handle gracefully without failing the test due to environmental status
         if (totalRowsOnPage == 0) {
-            System.out.println("⚠️ Figyelem: A tranzakciós táblázat jelenleg üres ezen a demó fiókon.");
+            System.out.println("⚠️ Warning: The transaction table is currently empty for this demo account.");
             return;
         }
 
-        // Az elvárt összeg részlet, amit a sorokban ellenőrzünk
+        // Expected amount substring to validate within rows
         String expectedAmount = ".00";
 
-        // 5. LÉPÉS: Ciklusos ellenőrzés az első 3 sorra (mint órán)
+        // STEP 5: Loop-based verification for the first 3 rows
         int rowsToValidate = Math.min(totalRowsOnPage, 3);
 
         for (int i = 0; i < rowsToValidate; i++) {
             accountPage.validateTransactionRowAmount(i, expectedAmount);
         }
 
-        System.out.println("TC05 - A tranzakciós táblázat sorainak ciklikus ellenőrzése sikeresen befejeződött.");
+        System.out.println("TC05 - Loop-based verification of transaction table rows completed successfully.");
     }
 }

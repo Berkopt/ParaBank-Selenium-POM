@@ -13,43 +13,43 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-@Feature("Bejelentkezés és Hitelesítés")
+@Feature("Login and Authentication")
 public class TC01_SuccessfulLogin_Test extends BaseTest {
     ParaLoginPage loginPage;
     ParaAccountPage accountPage;
 
     @Test
     @DisplayName("TC01_SuccessfulLogin")
-    @Description("TC01 leírás: Sikeres bejelentkezés ellenőrzése érvényes adatokkal a ParaBank felületén.")
+    @Description("TC01 Description: Verifying successful login using valid credentials on the ParaBank platform.")
     @Tag("TC01")
-    @Tag("Bejelentkezés")
+    @Tag("Login")
     @Tag("SmokeTest")
-    @Tag("PozitívTeszt")
+    @Tag("PositiveTest")
     @Severity(SeverityLevel.BLOCKER)
     public void tc01_successfulLogin(TestInfo testInfo) {
 
-        // 1. LÉPÉS: Megvárjuk, amíg a ParaBank kezdőlapja (index) bejön és a login mező kitölthető
+        // STEP 1: Wait for the ParaBank index page to load and ensure the username field is clickable
         wait.until(ExpectedConditions.urlContains("index"));
         wait.until(ExpectedConditions.elementToBeClickable(By.name("username")));
 
         loginPage = new ParaLoginPage(driver);
         accountPage = new ParaAccountPage(driver);
 
-        // 2. LÉPÉS: Megadjuk a belépési adatokat és kattintunk
+        // STEP 2: Enter valid login credentials and submit
         loginPage.enterCredentials("john", "demo");
         loginPage.clickLogin();
 
-        // 3. LÉPÉS: SIKERES BEJELENTKEZÉS UTÁN megvárjuk, hogy az URL átváltson overview-ra
+        // STEP 3: AFTER SUCCESSFUL LOGIN, wait for the URL to redirect to the overview page
         wait.until(ExpectedConditions.urlContains("overview"));
 
-        // 4. LÉPÉS: Validáljuk, hogy valóban a ParaBank belső oldalán vagyunk
+        // STEP 4: Validate that the user is successfully navigated to the internal account overview page
         String actualTitle = accountPage.getTitleText();
 
-        // A tiszta ParaAccountPage-ben a getTitleText() visszaadja a főcímet, ami a ParaBankban "Accounts Overview"
-        // Vagy ha azt nem találja meg, a biztonsági mentésként beállított oldalcímet: "ParaBank | Accounts Overview"
+        // In ParaAccountPage, getTitleText() returns the main header "Accounts Overview",
+        // or falls back to the browser page title: "ParaBank | Accounts Overview"
         org.junit.jupiter.api.Assertions.assertTrue(
                 actualTitle.contains("Accounts Overview") || actualTitle.contains("ParaBank"),
-                "A kapott oldal címe nem megfelelő! Aktuális cím: " + actualTitle
+                "The page title or header is incorrect! Actual title: " + actualTitle
         );
     }
 }

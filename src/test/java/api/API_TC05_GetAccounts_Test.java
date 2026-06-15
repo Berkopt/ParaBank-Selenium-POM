@@ -13,36 +13,36 @@ import static org.hamcrest.Matchers.greaterThan;
 public class API_TC05_GetAccounts_Test extends BaseApiTest {
 
     /**
-     * Ez a teszt listázza az adott ügyfélhez tartozó összes számlát,
-     * * GET /customers/{id}/accounts
+     * This test lists all bank accounts belonging to a specific customer using:
+     * GET /customers/{id}/accounts
      */
     @Test
     @DisplayName("API_TC05_GetAccounts_Test")
     @Tag("API")
-    @Tag("PozitívTeszt")
+    @Tag("PositiveTest")
     public void tc05_getAccounts(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
         int customerId = 12212;
 
-        System.out.println("Időpont: " + customerId + " ügyfél számláinak lekérése...");
+        System.out.println("Fetching all bank accounts for customer ID: " + customerId + "...");
 
-        /* GET kérés indítása a számlák listázásához */
+        /* Send GET request to retrieve the list of accounts */
         Response response = given()
                 .pathParam("id", customerId)
                 .when()
                 .get("/customers/{id}/accounts");
 
-        /* Kiíratjuk a teljes JSON listát a konzolra (prettyPrint) */
-        System.out.println("--- Kijelzett számla adatok (JSON) ---");
+        /* Print the complete JSON response array to the console for inspection */
+        System.out.println("--- Retrieved Account Data (JSON) ---");
         response.prettyPrint();
         System.out.println("-------------------------------------");
 
-        /* Ellenőrizzük, hogy a válasz 200 OK és a kapott lista nem üres (mérete nagyobb, mint 0) */
+        /* Assert that the status code is 200 OK and the root JSON array length is greater than 0 */
         response.then()
                 .statusCode(200)
                 .body("$", hasSize(greaterThan(0)));
 
-        System.out.println("API_TC05 - Az összes számla sikeresen kilistázva és ellenőrizve.");
+        System.out.println("API_TC05 - All customer accounts successfully listed and verified.");
     }
 }

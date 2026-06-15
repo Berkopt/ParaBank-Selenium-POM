@@ -4,9 +4,8 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 import org.junit.platform.suite.api.SuiteDisplayName;
 
-
 @Suite
-@SuiteDisplayName("ParaBank Teljes Tesztcsomag")
+@SuiteDisplayName("ParaBank Full Regression Test Suite")
 @SelectClasses({
         TC01_SuccessfulLogin_Test.class,
         TC02_InvalidLogin_Test.class,
@@ -20,5 +19,5 @@ import org.junit.platform.suite.api.SuiteDisplayName;
         TC10_Logout_Test.class,
 })
 public class AllTestsSuite {
-
+    // This suite class acts as a container to group and run all GUI test cases together
 }

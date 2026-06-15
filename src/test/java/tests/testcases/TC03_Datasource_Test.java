@@ -16,51 +16,51 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.List;
 
-@Feature("Megtakarítási számlák kezelése")
+@Feature("Savings Account Management")
 public class TC03_Datasource_Test extends BaseTest {
     ParaLoginPage loginPage;
     ParaAccountPage accountPage;
 
     @Test
-    @DisplayName("TC03_Datasource - Számlák létrehozása CSV-ből")
-    @Description("TC03 leírás: Megtakarítási számlák sorozatos létrehozása külső CSV adatforrásból beolvasott adatok alapján.")
+    @DisplayName("TC03_Datasource - Create Accounts from CSV")
+    @Description("TC03 Description: Sequential creation of savings accounts based on data loaded from an external CSV data source.")
     @Tag("TC03")
-    @Tag("Sorozatos")
-    @Tag("Adatforrás")
+    @Tag("Sequential")
+    @Tag("DataSource")
     @Severity(SeverityLevel.CRITICAL)
     public void tc03_datasource(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
-        /* 1. CSV Adatok betöltése a listába a DataSource segítségével */
+        /* STEP 1: Load data from CSV file into a list using the DataSource utility */
         List<Saving> savings = DataSource.loadSavings();
-        System.out.println("Beolvasott számlák száma a CSV-ből: " + savings.size());
+        System.out.println("Number of accounts loaded from CSV: " + savings.size());
 
-        // Biztonsági ellenőrzés: Ne fusson a teszt, ha üres a CSV
-        Assertions.assertFalse(savings.isEmpty(), "A CSV fájl üres vagy nem sikerült beolvasni!");
+        // Fail-safe check: Do not execute the test if the CSV file is empty
+        Assertions.assertFalse(savings.isEmpty(), "The CSV file is empty or could not be loaded!");
 
-        /* 2. Bejelentkezés a ParaBankba (Mivel a BaseTest setUp-ja már megnyitotta a böngészőt) */
+        /* STEP 2: Log in to ParaBank (Since BaseTest setUp has already initialized the browser) */
         loginPage = new ParaLoginPage(driver);
         accountPage = new ParaAccountPage(driver);
 
-        // Ide írd be a te érvényes ParaBankos belépési adataidat
+        // Valid ParaBank login credentials
         loginPage.enterCredentials("john", "demo");
         loginPage.clickLogin();
 
-        /* 3. Ciklusban végigmegyünk a listán és mindegyik sorra elvégezzük a számlanyitást */
+        /* STEP 3: Iterate through the list and open a new account for each row sequentially */
         for (Saving saving : savings) {
-            System.out.println("-> Feldolgozás alatt: " + saving.getName() + " (Összeg: " + saving.getInitialDeposit() + ")");
+            System.out.println("-> Processing: " + saving.getName() + " (Amount: " + saving.getInitialDeposit() + ")");
 
-            // 1. Elnavigálunk a számlanyitás oldalra
+            // 1. Navigate to the open new account section
             accountPage.navigateToNewSavings();
 
-            // 2. Létrehozzuk a megtakarítást a CSV-ből jövő adatokkal
+            // 2. Create a new savings account using the data provided from the CSV
             accountPage.createNewSaving(saving);
 
-            // 3. Validáljuk, hogy megjelent-e a sikeres számlanyitás üzenet
+            // 3. Validate if the success message for account creation is displayed
             boolean isCreated = accountPage.isAccountCreatedSuccessfully();
-            Assertions.assertTrue(isCreated, "A számla létrehozása elbukott ennél: " + saving.getName());
+            Assertions.assertTrue(isCreated, "Account creation failed for: " + saving.getName());
         }
 
-        System.out.println(testInfo.getDisplayName() + " sikeresen és hiba nélkül lefutott.");
+        System.out.println(testInfo.getDisplayName() + " completed successfully without errors.");
     }
 }

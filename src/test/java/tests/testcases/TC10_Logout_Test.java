@@ -1,6 +1,5 @@
 package tests.testcases;
 
-import tests.testcases.BaseTest; // EZ AZ IMPORT HIÁNYZOTT! Így már látni fogja a BaseTest-et, a driver-t és a wait-et.
 import Pages.Runers.ParaLoginPage;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
@@ -17,28 +16,28 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Feature("Kijelentkezés")
+@Feature("Logout")
 public class TC10_Logout_Test extends BaseTest {
     ParaLoginPage loginPage;
 
     @Test
     @DisplayName("TC10_SuccessfulLogout")
-    @Description("TC10 leírás: Sikeres kijelentkezés ellenőrzése. A felhasználó belép, majd a Log Out gombra kattintva visszakerül a kezdőlapra.")
+    @Description("TC10 Description: Verifying successful logout functionality. The user logs in, clicks the Log Out button, and is redirected back to the index page.")
     @Tag("TC10")
     @Tag("Logout")
-    @Tag("PozitívTeszt")
+    @Tag("PositiveTest")
     @Severity(SeverityLevel.CRITICAL)
     public void tc10_successfulLogout(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
-        // 1. LÉPÉS: Megvárjuk a kezdőlapot és bejelentkezünk
+        // STEP 1: Wait for the index page to load and perform login
         wait.until(ExpectedConditions.urlContains("index"));
         loginPage = new ParaLoginPage(driver);
 
         loginPage.enterCredentials("john", "demo");
         loginPage.clickLogin();
 
-        // 2. LÉPÉS: Ellenőrizzük, hogy sikerült-e belépni (ha nem, környezeti hiba)
+        // STEP 2: Verify successful authentication state (Handle environmental issues gracefully)
         boolean loginSuccessful = false;
         try {
             loginSuccessful = wait.until(ExpectedConditions.urlContains("overview"));
@@ -47,28 +46,28 @@ public class TC10_Logout_Test extends BaseTest {
         }
 
         if (!loginSuccessful) {
-            System.out.println("⚠️ KÖRNYEZETI HIBA: A ParaBank szervere nem engedett be, a Logout-ot nem lehet tesztelni.");
-            System.out.println("A tesztet sikeresnek tekintjük, mert a hiba külső eredetű.");
+            System.out.println("⚠️ ENVIRONMENTAL ERROR: The ParaBank server did not authenticate the user; logout cannot be verified.");
+            System.out.println("The test is considered PASSED because the root cause is an external infrastructure failure.");
             return;
         }
 
-        // 3. LÉPÉS: Kijelentkezés gomb megkeresése és kattintás
-        System.out.println("Sikeres belépés megtörtént. Kijelentkezés indítása...");
+        // STEP 3: Locate and click the logout link
+        System.out.println("Successful login detected. Initiating logout sequence...");
 
         By logoutLinkLocator = By.linkText("Log Out");
         wait.until(ExpectedConditions.elementToBeClickable(logoutLinkLocator)).click();
 
-        // 4. LÉPÉS: Ellenőrzés, hogy visszajutottunk-e a bejelentkező oldalra
-        System.out.println("Várakozás a kijelentkezés utáni állapotra...");
+        // STEP 4: Verify redirection back to the login interface
+        System.out.println("Waiting for post-logout state validation...");
 
         boolean loggedOutSuccessfully = wait.until(d -> {
-            // Itt a 'driver' szót átneveztem 'd'-re, mert a lambda kifejezésen belül nem ütközhet a fenti driver-rel!
+            // Variable named 'd' inside the lambda to prevent naming collision with the parent driver field
             List<WebElement> loginFields = d.findElements(By.name("username"));
             return !loginFields.isEmpty() && d.getCurrentUrl().contains("index");
         });
 
-        // 5. LÉPÉS: Végső kiértékelés
-        assertTrue(loggedOutSuccessfully, "Hiba: A kijelentkezés után nem a nyitóoldalra érkeztünk vissza!");
-        System.out.println("TC10 - A sikeres kijelentkezés ellenőrzése sikeresen befejeződött.");
+        // STEP 5: Final assertion evaluation
+        assertTrue(loggedOutSuccessfully, "Error: The user was not redirected back to the index landing page after logging out!");
+        System.out.println("TC10 - Verification of successful logout completed successfully.");
     }
 }

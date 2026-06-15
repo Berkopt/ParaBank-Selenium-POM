@@ -9,38 +9,38 @@ import org.junit.jupiter.api.TestInfo;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-public class API_TC02_GetProfileData_Test extends BaseApiTest { // Örököljük az alapbeállításokat
+public class API_TC02_GetProfileData_Test extends BaseApiTest { // Inherit global API configurations
 
     @Test
     @DisplayName("API_TC02_GetProfileData")
     @Tag("API")
-    @Tag("PozitívTeszt")
+    @Tag("PositiveTest")
     public void api_tc02_getProfileData(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
-        // John nevű tesztfelhasználó fix ügyfél-azonosítója a ParaBankon: 12212
+        // Fixed customer ID for the test user 'John' on ParaBank: 12212
         String expectedFirstName = "John";
         String expectedLastName = "Smith";
 
-        /* Küldünk egy GET kérést a profiladatokért a ParaBank megfelelő végpontjára */
+        /* Send a GET request to the appropriate ParaBank endpoint to retrieve profile details */
         Response response = given()
-                // Itt adhatnánk meg query paramétereket vagy header-t, ha a ParaBank kérné, de most tiszta GET-et küldünk
+                // Query parameters or custom headers can be specified here if required by the endpoint
                 .when()
                 .get("/customers/12212");
 
-        // Kiíratjuk a formázott JSON választ a konzolra
-        System.out.println("--- API VÁLASZ (JSON) ---");
+        // Print the formatted JSON payload to the console
+        System.out.println("--- API RESPONSE (JSON) ---");
         response.prettyPrint();
-        System.out.println("------------------------");
+        System.out.println("---------------------------");
 
-        /* Ellenőrzések (Assertions) */
+        /* Assertions */
         response.then()
-                .statusCode(200) // Elvárás: Sikeres 200 OK
-                // Ellenőrizzük, hogy a profil adatai között a keresett név szerepel-e
+                .statusCode(200) // Assertion: Expect a successful 200 OK status code
+                // Verify that the profile attributes match the expected test user details
                 .body("firstName", equalTo(expectedFirstName))
                 .body("lastName", equalTo(expectedLastName))
-                .body("address.city", notNullValue()); // Ellenőrizzük, hogy a város mező sem üres
+                .body("address.city", notNullValue()); // Assertion: Verify that the nested city field is not null or empty
 
-        System.out.println("API_TC02 - A saját profiladatok ellenőrzése sikeresen befejeződött.");
+        System.out.println("API_TC02 - Verification of user profile data completed successfully.");
     }
 }

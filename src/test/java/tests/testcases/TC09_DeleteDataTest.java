@@ -12,42 +12,42 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 /**
- * TC09 - Adatbázis alaphelyzetbe állításának (tisztításának) vizsgálata
+ * TC09 - Database Reset and Data Clean-up Verification
  */
 public class TC09_DeleteDataTest extends BaseTest {
 
     @Test
     @DisplayName("TC09_DeleteData")
-    @Description("ParaBank tesztadatok törlése és az adatbázis alaphelyzetbe állítása")
+    @Description("TC09 Description: Deleting ParaBank test data and resetting the database to its initial state.")
     @Tag("TC09")
-    @Tag("Törlés")
+    @Tag("Deletion")
     public void TC09DeleteData(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
         try {
-            // 1. LÉPÉS: Navigálás közvetlenül az Adminisztrációs oldalra
-            System.out.println("Navigálás az Adminisztrációs oldalra...");
+            // STEP 1: Direct navigation to the Administration page
+            System.out.println("Navigational routing to the Administration page...");
             driver.get("https://parabank.parasoft.com/parabank/admin.htm");
 
-            // 2. LÉPÉS: Megvárjuk, míg a gomb kattinthatóvá válik, majd megnyomjuk
-            System.out.println("Adatbázis tisztítása folyamatban (CLEAN)...");
+            // STEP 2: Wait until the button becomes clickable, then submit the request
+            System.out.println("Database clean-up in progress (CLEAN)...");
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             WebElement cleanButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@value='CLEAN']")));
             cleanButton.click();
 
-            // 3. LÉPÉS: Mivel a sikerszöveg instabil, várunk egy picit a backend műveletre, majd frissítünk
+            // STEP 3: As the success text is unstable, wait briefly for the backend operation to complete, then reload
             Thread.sleep(2000);
             driver.navigate().refresh();
 
-            // 4. LÉPÉS: Ellenőrizzük, hogy az admin oldal az újratöltés után is sikeresen megjelent-e
+            // STEP 4: Verify if the administration dashboard reloaded successfully
             WebElement adminHeader = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[contains(text(),'Administration')]")));
-            org.junit.jupiter.api.Assertions.assertTrue(adminHeader.isDisplayed(), "Az admin oldal nem töltődött be a tisztítás után!");
+            org.junit.jupiter.api.Assertions.assertTrue(adminHeader.isDisplayed(), "The Administration page failed to load after the clean-up process!");
 
-            System.out.println("TC09 - Az adatok tisztítása (CLEAN) sikeresen elküldve, az oldal stabil.");
+            System.out.println("TC09 - Database clean-up command (CLEAN) sent successfully, system state is stable.");
 
         } catch (Exception e) {
-            // Ha a ParaBank épp teljesen elérhetetlen vagy elhasal, akkor lekezeljük
-            System.out.println("⚠️ KÖRNYEZETI HIBA: A ParaBank admin felülete nem válaszolt időben. Teszt passzolt környezeti kivétellel.");
+            // Handle environmental exceptions if the ParaBank server is unresponsive or down
+            System.out.println("⚠️ ENVIRONMENTAL ERROR: The ParaBank Administration dashboard did not respond in time. Test passed via environmental exception.");
         }
     }
 }

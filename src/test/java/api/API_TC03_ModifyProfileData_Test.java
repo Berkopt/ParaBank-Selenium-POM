@@ -15,12 +15,12 @@ public class API_TC03_ModifyProfileData_Test extends BaseApiTest {
     @Test
     @DisplayName("API_TC03_ChainedGetAccount_Test")
     @Tag("API")
-    @Tag("PozitívTeszt")
+    @Tag("PositiveTest")
     public void api_tc03_modifyProfileData(TestInfo testInfo) {
-        System.out.println(testInfo.getDisplayName() + " elindult.");
+        System.out.println(testInfo.getDisplayName() + " started.");
 
-        // 1. LÉPÉS: Lekérjük a felhasználó profilját az azonosítója alapján
-        System.out.println("1. Lépés: Felhasználói adatok lekérése...");
+        // STEP 1: Retrieve user profile based on customer identifier
+        System.out.println("Step 1: Fetching user profile details...");
         Response customerResponse = given()
                 .when()
                 .get("/customers/12212");
@@ -29,30 +29,30 @@ public class API_TC03_ModifyProfileData_Test extends BaseApiTest {
                 .statusCode(200)
                 .body("firstName", equalTo("John"));
 
-        // Kinyerjük a belső adatot: elmentjük az ID-t egy változóba
+        // Extract runtime data: store the dynamic ID in a variable
         int customerId = customerResponse.path("id");
-        System.out.println("--> Dinamikusan kinyert Customer ID: " + customerId);
+        System.out.println("--> Dynamically extracted Customer ID: " + customerId);
 
-        // 2. LÉPÉS: Láncolás (Chaining)
-        // A megszerzett customerId-t felhasználva kérjük le az ügyfél számláit egy másik végponton
-        System.out.println("2. Lépés: Számlák lekérése a megszerzett Customer ID-val...");
+        // STEP 2: API Chaining
+        // Using the extracted customerId to request the customer's accounts from a different endpoint
+        System.out.println("Step 2: Fetching accounts using the extracted Customer ID...");
         Response accountsResponse = given()
-                .pathParam("id", customerId) // Itt fűzzük be dinamikusan a változót
+                .pathParam("id", customerId) // Inject the variable dynamically as a path parameter
                 .when()
                 .get("/customers/{id}/accounts");
 
         accountsResponse.then()
                 .statusCode(200)
-                .body("[0].id", notNullValue()) // Ellenőrizzük, hogy van legalább egy számlája
-                .body("[0].customerId", equalTo(customerId)); // És az a számla tényleg az övé
+                .body("[0].id", notNullValue()) // Assertion: Verify that at least one account exists
+                .body("[0].customerId", equalTo(customerId)); // Assertion: Verify that the account belongs to this customer
 
-        // Kinyerjük az első számlájának a konkrét számát (számla ID)
+        // Extract the specific account number (Account ID) from the first record
         int accountId = accountsResponse.path("[0].id");
-        System.out.println("--> Dinamikusan kinyert első számlaszám (Account ID): " + accountId);
+        System.out.println("--> Dynamically extracted primary Account ID: " + accountId);
 
-        // 3. LÉPÉS: Továbbláncolás (Deep Chaining)
-        // Lekérjük a konkrét számla részletes egyenlegét a legfrissebb accountId változóval
-        System.out.println("3. Lépés: Konkrét számla egyenlegének ellenőrzése...");
+        // STEP 3: Deep Chaining
+        // Query the detailed balance information for the specific account using the latest accountId variable
+        System.out.println("Step 3: Verifying specific account details and balance...");
         given()
                 .pathParam("accountId", accountId)
                 .when()
@@ -62,6 +62,6 @@ public class API_TC03_ModifyProfileData_Test extends BaseApiTest {
                 .body("customerId", equalTo(customerId))
                 .body("type", equalTo("CHECKING"));
 
-        System.out.println("API_TC03 - A láncolt API adatelérés és ellenőrzés sikeresen lefutott.");
+        System.out.println("API_TC03 - Chained API data retrieval and verification completed successfully.");
     }
 }

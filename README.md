@@ -1,51 +1,51 @@
 # ParaBank Test Automation Framework (GUI & API)
 
-Ez egy komplex tesztautomatizálási mintaprojekt, amely a **ParaBank** demó banki alkalmazás webes felületét (GUI) és backend szolgáltatásait (API) teszteli. A projekt elsődleges célja a modern tesztautomatizálási tervezési minták (pl. Page Object Model), valamint a frontend és backend tesztek egyetlen keretrendszerbe foglalásának bemutatása.
+This is a comprehensive test automation reference project designed to validate both the web user interface (GUI) and the backend REST services (API) of the **ParaBank** demo banking application. The primary goal of this repository is to demonstrate modern test automation design patterns (such as the Page Object Model) and showcase how frontend and backend validation can seamlessly coexist within a single framework.
 
 ---
 
-## 🛠️ Alkalmazott Technológiák & Eszközök
+## 🛠️ Tech Stack & Tools
 
-* **Programozási nyelv:** Java 25 (vagy újabb JDK)
-* **Build eszköz:** Maven
-* **GUI Automatizálás:** Selenium WebDriver (4.18+)
-* **API Tesztelés:** RestAssured (5.4+)
-* **Teszt keretrendszer:** JUnit 5 (Jupyter & Platform Suite)
-* **Állítások (Assertions):** Hamcrest Matchers
-* **Tervezési minta:** Page Object Model (POM)
-
----
-
-## 📋 Tesztlefedettség
-
-A projektben a tesztek logikailag és szerkezetileg is különválnak, de közös JUnit 5 Suite-okon keresztül egyben is futtathatóak.
-
-### 🖥️ GUI Tesztek (10 db teszteset)
-A felületi tesztek a Page Object Model (POM) struktúrát követik, biztosítva az újrahasznosíthatóságot és a könnyű karbantarthatóságot.
-* Sikeres és sikertelen bejelentkezési forgatókönyvek.
-* Adatforrás (Data-driven) alapú tesztelés.
-* Új adatbevitel, listázás és többoldalas lista-elemek kezelése.
-* Meglévő adatok módosítása, mentése és törlése.
-* Biztonságos kijelentkezés ellenőrzése.
-
-### 🔌 API Tesztek (5 db teszteset)
-A backend tesztek a RestAssured könyvtár segítségével közvetlenül a REST végpontokat hívják meg.
-* **API Chaining (Láncolás):** Dinamikus adatkinyerés a JSON válaszokból (pl. Customer ID, Account ID kinyerése), majd ezek automatikus továbbküldése a következő API hívások paramétereibe.
-* Státuszkódok (200 OK) és JSON struktúrák (pl. típusok, tömbi méretek) validálása Hamcrest segítségével.
-* Számlák listázása és ellenőrzése.
+* **Programming Language:** Java 26 (or newer JDK)
+* **Build Tool:** Maven
+* **GUI Automation:** Selenium WebDriver (4.18+)
+* **API Testing:** RestAssured (5.4+)
+* **Test Framework:** JUnit 5 (Jupyter & Platform Suite)
+* **Assertions:** JUnit 5 Assertions & Hamcrest Matchers
+* **Design Pattern:** Page Object Model (POM)
 
 ---
 
-## 🚀 Futtatás
+## 📋 Test Coverage
 
-A tesztek futtatásához klónozd a repót, majd használd az alábbi lehetőségek egyikét:
+The test suites within this project are logically and structurally isolated, yet they remain tightly integrated through JUnit 5 Suites for comprehensive execution.
 
-### 1. IntelliJ IDEA-ból (Ajánlott)
-A tesztek futtatásához célszerű a JUnit 5 Suite osztályokat használni, így egy kattintással indítható a teljes csomag:
-* **GUI tesztek futtatása:** `tests.testcases.AllTestsSuite` osztály megnyitása -> Futtatás gomb.
-* **API tesztek futtatása:** `api.ApiTestSuite` osztály megnyitása -> Futtatás gomb.
+### 🖥️ GUI Automation Suite (10 Test Cases)
+The frontend tests strictly adhere to the Page Object Model (POM) architecture, ensuring high reusability, clean locator separation, and sustainable maintenance.
+* **Authentication:** Robust verification of successful and failed login workflows.
+* **Data-driven Testing:** Externalized data ingestion and processing.
+* **Data Operations:** Form submissions, looping record lists, and multi-page data grid traversal.
+* **Profile Management:** Modifying, saving, and verifying persistent user profile metadata.
+* **Session Controls & Clean-up:** Fail-safe application database reset operations and secure session logouts.
 
-### 2. Parancssorból (Maven)
-A teljes tesztcsomag futtatása:
+### 🔌 REST API Suite (5 Test Cases)
+The backend test suite interacts directly with the system's endpoints using the RestAssured library.
+* **API Chaining:** Advanced runtime data extraction from JSON responses (e.g., dynamic harvesting of Customer IDs and Account IDs) and injecting them as downstream path/query parameters in subsequent requests.
+* **Response Validation:** Strict assertions evaluating HTTP status codes (200 OK) and deeply nested JSON response payloads (data types, arrays, and bounds) using Hamcrest matchers.
+* **Account Scenarios:** Querying, listing, and profiling programmatic financial account creation.
+
+---
+
+## 🚀 Execution Guide
+
+To execute the test suites locally, clone the repository and choose one of the deployment options outlined below:
+
+### 1. Via IntelliJ IDEA (Recommended)
+The most efficient way to run the test cases inside the IDE is by target-firing the dedicated JUnit 5 Suite wrapper classes:
+* **To run all GUI tests:** Navigate to the `tests.testcases.AllTestsSuite` class and click the **Run** icon.
+* **To run all API tests:** Navigate to the `api.ApiTestSuite` class and click the **Run** icon.
+
+### 2. Via Command Line Interface (Maven)
+To trigger the entire test suite across both scopes inside your terminal, execute the following command:
 ```bash
 mvn test
