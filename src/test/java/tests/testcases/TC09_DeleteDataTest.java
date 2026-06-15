@@ -1,4 +1,4 @@
-package tests;
+package tests.testcases;
 
 import io.qameta.allure.Description;
 import org.junit.jupiter.api.DisplayName;

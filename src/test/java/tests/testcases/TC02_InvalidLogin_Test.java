@@ -1,4 +1,4 @@
-package tests;
+package tests.testcases;
 
 import Pages.Runers.ParaLoginPage;
 import io.qameta.allure.Description;

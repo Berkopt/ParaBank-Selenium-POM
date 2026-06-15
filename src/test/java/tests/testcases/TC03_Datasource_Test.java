@@ -1,4 +1,4 @@
-package tests;
+package tests.testcases;
 
 import tests.datatypes.Saving;
 import tests.utils.DataSource;

@@ -1,4 +1,4 @@
-package tests;
+package tests.testcases;
 
 import Pages.Runers.ParaAccountPage;
 import Pages.Runers.ParaLoginPage;

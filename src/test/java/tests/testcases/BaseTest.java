@@ -1,4 +1,4 @@
-package tests; // vagy ahol a BaseTest osztályod lakik
+package tests.testcases; // vagy ahol a BaseTest osztályod lakik
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;  // JUnit 5 annotáció!
