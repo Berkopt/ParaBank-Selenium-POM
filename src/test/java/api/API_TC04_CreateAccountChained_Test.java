@@ -10,7 +10,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-public class API_TC4_CreateAccountChained_Test extends BaseApiTest {
+public class API_TC04_CreateAccountChained_Test extends BaseApiTest {
 
     @Test
     @DisplayName("API_TC04_CreateAccountChained_Test")

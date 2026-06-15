@@ -11,7 +11,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
         API_TC01_GetCustomerDetails_Test.class,
         API_TC02_GetProfileData_Test.class,
         API_TC03_ModifyProfileData_Test.class,
-        API_TC4_CreateAccountChained_Test.class,
+        API_TC04_CreateAccountChained_Test.class,
         API_TC05_GetAccounts_Test.class
 })
 public class ApiTestSuite {
