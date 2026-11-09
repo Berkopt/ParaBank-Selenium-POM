@@ -9,24 +9,25 @@ public class ParaLoginPage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    // Szelektorok eltárolása By objektumokban
+    // Storing locators as By objects
     private By usernameField = By.name("username");
     private By passwordField = By.name("password");
     private By loginButton = By.xpath("//input[@value='Log In']");
 
-    // Konstruktor
+    // Constructor
     public ParaLoginPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     /**
-     * Hitelesítési adatok bevitele a mezőkbe
-     * @param username Felhasználónév (pl. Admin)
-     * @param password Jelszó
+     * Enters credentials into the login fields
+     *
+     * @param username Username (e.g., Admin)
+     * @param password Password
      */
     public void enterCredentials(String username, String password) {
-        // Megvárjuk, hogy a mező írható legyen, kitisztítjuk, majd beírjuk az adatot
+        // Clear the fields and enter the credentials
         driver.findElement(usernameField).clear();
         driver.findElement(usernameField).sendKeys(username);
 
@@ -35,7 +36,7 @@ public class ParaLoginPage {
     }
 
     /**
-     * Kattintás a bejelentkezés gombra
+     * Clicks the login button
      */
     public void clickLogin() {
         driver.findElement(loginButton).click();

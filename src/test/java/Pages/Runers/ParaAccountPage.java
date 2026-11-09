@@ -1,6 +1,6 @@
 package Pages.Runers;
 
-import tests.datatypes.Saving; // Import a TC03-hoz és TC08-hoz (CSV modell)
+import tests.datatypes.Saving; // Import for TC03 and TC08 (CSV model)
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -16,13 +16,13 @@ public class ParaAccountPage {
     private WebDriverWait wait;
 
     // ==========================================
-    //       KÖZÖS / ALAP SZELEKTOROK (TC01-TC02)
+    //       COMMON / BASE LOCATORS (TC01-TC02)
     // ==========================================
     private By pageTitle = By.cssSelector("h1.title, h2.title");
 
 
     // ==========================================
-    //         SZÁMLANYITÁS SZELEKTOROK (TC03)
+    //         ACCOUNT CREATION LOCATORS (TC03)
     // ==========================================
     private By openNewAccountLink = By.linkText("Open New Account");
     private By accountTypeDropdown = By.id("type");
@@ -30,7 +30,7 @@ public class ParaAccountPage {
 
 
     // ==========================================
-    //         UTALÁS / ADATBEVITEL SZELEKTOROK (TC04)
+    //         TRANSFER / DATA INPUT LOCATORS (TC04)
     // ==========================================
     private By transferFundsLink = By.linkText("Transfer Funds");
     private By amountInput = By.id("amount");
@@ -40,7 +40,7 @@ public class ParaAccountPage {
 
 
     // ==========================================
-    //  LISTÁZÁS ÉS TÖBBOLDALAS SZELEKTOROK (TC05-TC06)
+    //  LISTING & PAGINATION LOCATORS (TC05-TC06)
     // ==========================================
     private By firstAccountLink = By.xpath("//table[@id='accountTable']/tbody/tr[1]/td[1]/a");
     private By transactionRows = By.xpath("//table[@id='transactionTable']/tbody/tr");
@@ -48,20 +48,20 @@ public class ParaAccountPage {
 
 
     // ==========================================
-    //         ADATKIMENTÉS SZELEKTOROK (TC08)
+    //         DATA EXTRACTION LOCATORS (TC08)
     // ==========================================
-    // Ez a főoldali számlatáblázat sorait célozza meg
+    // Targets the rows of the main page account table
     private By accountTableRows = By.cssSelector("#accountTable tbody tr");
 
 
-    // KONSTRUKTOR
+    // CONSTRUCTOR
     public ParaAccountPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     // ==========================================
-    //       ALAP METÓDUSOK (TC01 - TC02)
+    //       BASE METHODS (TC01 - TC02)
     // ==========================================
 
     public String getTitleText() {
@@ -74,7 +74,7 @@ public class ParaAccountPage {
 
 
     // ==========================================
-    //       SZÁMLANYITÁS METÓDUSOK (TC03)
+    //       ACCOUNT CREATION METHODS (TC03)
     // ==========================================
 
     public void navigateToNewSavings() {
@@ -103,7 +103,7 @@ public class ParaAccountPage {
 
 
     // ==========================================
-    //    UTALÁS / CIKLIKUS ADATBEVITEL (TC04)
+    //    TRANSFER / CYCLIC DATA INPUT (TC04)
     // ==========================================
 
     public void navigateToTransferFunds() {
@@ -128,11 +128,11 @@ public class ParaAccountPage {
 
 
     // ==========================================
-    //  LISTÁZÁS ÉS TÖBBOLDALAS BEJÁRÁS (TC05-TC06)
+    //  LISTING & MULTI-PAGE TRAVERSAL (TC05-TC06)
     // ==========================================
 
     /**
-     * Megnyitja a főoldali táblázat legelső számlájának történetét (TC05)
+     * Opens the history of the very first account in the main table (TC05)
      */
     public void openFirstAccountActivity() {
         wait.until(ExpectedConditions.elementToBeClickable(firstAccountLink)).click();
@@ -140,7 +140,7 @@ public class ParaAccountPage {
     }
 
     /**
-     * Visszaadja, hány tranzakció sor van az aktuális táblázatban (TC05, TC06)
+     * Returns how many transaction rows are present in the current table (TC05, TC06)
      */
     public int getTransactionRowsCount() {
         try {
@@ -151,7 +151,7 @@ public class ParaAccountPage {
     }
 
     /**
-     * Validálja a táblázat egy adott sorának összegét az "Amount" oszlopban (TC05, TC06)
+     * Validates the amount of a specific row in the "Amount" column (TC05, TC06)
      */
     public void validateTransactionRowAmount(int rowIndex, String expectedAmount) {
         By amountCellLocator = By.xpath("//table[@id='transactionTable']/tbody/tr[" + (rowIndex + 1) + "]/td[3]");
@@ -159,15 +159,15 @@ public class ParaAccountPage {
         String actualAmount = wait.until(ExpectedConditions.visibilityOfElementLocated(amountCellLocator)).getText();
         actualAmount = actualAmount.replace("$", "").trim();
 
-        System.out.println("-> " + (rowIndex + 1) + ". sor ellenőrizve. Elvárt: " + expectedAmount + ", Kapott: " + actualAmount);
+        System.out.println("-> " + (rowIndex + 1) + ". row verified. Expected: " + expectedAmount + ", Actual: " + actualAmount);
 
         org.junit.jupiter.api.Assertions.assertTrue(actualAmount.contains(expectedAmount),
-                "Hiba: A(z) " + (rowIndex + 1) + ". sorban nem a várt összeg szerepel! (Kapott: " + actualAmount + ")");
+                "Error: Row " + (rowIndex + 1) + " does not contain the expected amount! (Actual: " + actualAmount + ")");
     }
 
     /**
-     * Visszaadja a főoldali számlák teljes darabszámát (TC06)
-     * Levonunk egyet (-1), mert a táblázat utolsó sora a "Total" összesítő sor.
+     * Returns the total count of main page accounts (TC06)
+     * Subtracts one (-1) because the last row of the table is the "Total" summary row.
      */
     public int getAccountCount() {
         try {
@@ -178,7 +178,7 @@ public class ParaAccountPage {
     }
 
     /**
-     * Biztonságosan visszanavigál a főoldalra, és megnyitja a kiválasztott indexű számla történetét (TC06)
+     * Safely navigates back to the home page and opens the history of the selected index account (TC06)
      */
     public void openAccountActivityByIndex(int accountIndex) {
         driver.navigate().to("https://parabank.parasoft.com/parabank/overview.htm");
@@ -191,28 +191,28 @@ public class ParaAccountPage {
 
 
     // ==========================================
-    //        ADATKIMENTÉS METÓDUSOK (TC08)
+    //        DATA EXTRACTION METHODS (TC08)
     // ==========================================
 
     /**
-     * Leolvassa a ParaBank főoldali táblázatát, és Saving listát készít belőle (TC08)
+     * Reads the ParaBank main page table and creates a Saving list from it (TC08)
      */
     public List<Saving> getAllSavings() {
         List<Saving> foundSavings = new ArrayList<>();
 
-        // Megvárjuk, hogy a táblázat sorai láthatóak legyenek
+        // Wait for table rows to be visible
         wait.until(ExpectedConditions.visibilityOfElementLocated(accountTableRows));
         List<WebElement> rows = driver.findElements(accountTableRows);
 
-        // Az utolsó sort (Total) kihagyjuk, ezért megyünk rows.size() - 1 -ig
+        // Skip the last row (Total), so we loop up to rows.size() - 1
         for (int i = 0; i < rows.size() - 1; i++) {
             List<WebElement> cells = rows.get(i).findElements(By.tagName("td"));
 
             if (!cells.isEmpty()) {
-                String accountNumber = cells.get(0).getText().trim(); // 1. oszlop: Számlaszám (A te 'name' meződ)
-                String balance = cells.get(1).getText().trim();       // 2. oszlop: Egyenleg (A te 'initialDeposit' meződ)
+                String accountNumber = cells.get(0).getText().trim(); // 1st column: Account Number (Your 'name' field)
+                String balance = cells.get(1).getText().trim();       // 2nd column: Balance (Your 'initialDeposit' field)
 
-                // Létrehozzuk a Saving objektumot a te egyedi (name, initialDeposit) konstruktoroddal
+                // Create the Saving object using your custom (name, initialDeposit) constructor
                 Saving saving = new Saving(accountNumber, balance);
                 foundSavings.add(saving);
             }

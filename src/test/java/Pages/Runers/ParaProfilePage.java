@@ -10,14 +10,14 @@ public class ParaProfilePage {
     private WebDriver driver;
     private WebDriverWait wait;
 
-    // Szelektorok az Update Profile Info felülethez
+    // Locators for the Update Profile Info interface
     private By updateProfileLink = By.linkText("Update Profile Info");
     private By firstNameInput = By.id("customer.firstName");
     private By lastNameInput = By.id("customer.lastName");
     private By phoneNumberInput = By.id("customer.phoneNumber");
     private By submitButton = By.xpath("//input[@value='Update Profile']");
 
-    // Sikeres mentést igazoló szöveg szelektorja
+    // Locator for the success message confirming the update
     private By successMessage = By.xpath("//h1[contains(text(),'Profile Updated')]");
 
     public ParaProfilePage(WebDriver driver) {
@@ -26,36 +26,36 @@ public class ParaProfilePage {
     }
 
     /**
-     * Navigálás a profil módosító oldalra a bal oldali menüből
+     * Navigates to the profile update page from the left-side menu
      */
     public void navigateToUpdateProfile() {
         wait.until(ExpectedConditions.elementToBeClickable(updateProfileLink)).click();
-        // Megvárjuk, amíg legalább a keresztnév mező betöltődik és írhatóvá válik
+        // Wait until at least the first name field is loaded and ready
         wait.until(ExpectedConditions.visibilityOfElementLocated(firstNameInput));
     }
 
     /**
-     * Módosítja a profil adatokat (Keresztnév, Vezetéknév, Telefon)
+     * Modifies the profile information (First Name, Last Name, Phone)
      */
     public void modifyProfileData(String newFirstName, String newLastName, String newPhone) {
-        // Keresztnév módosítása
+        // Modify First Name
         wait.until(ExpectedConditions.elementToBeClickable(firstNameInput)).clear();
         driver.findElement(firstNameInput).sendKeys(newFirstName);
 
-        // Vezetéknév módosítása
+        // Modify Last Name
         driver.findElement(lastNameInput).clear();
         driver.findElement(lastNameInput).sendKeys(newLastName);
 
-        // Telefonszám módosítása
+        // Modify Phone Number
         driver.findElement(phoneNumberInput).clear();
         driver.findElement(phoneNumberInput).sendKeys(newPhone);
 
-        // Küldés / Mentés gomb
+        // Submit / Save button
         driver.findElement(submitButton).click();
     }
 
     /**
-     * Ellenőrzi, hogy a sikeres módosítást visszaigazoló üzenet megjelent-e a képernyőn
+     * Checks whether the success confirmation message appeared on the screen
      */
     public boolean isProfileUpdateSuccessful() {
         try {
